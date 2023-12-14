@@ -1,7 +1,10 @@
 'use client';
 
+import Button from '@/app/components/Button';
+import SetColor from '@/app/components/products/SetColor';
+import SetQuantity from '@/app/components/products/SetQuantity';
 import { Rating } from '@mui/material';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 interface ProductDetailsProps {
     product: any;
@@ -13,12 +16,12 @@ export type CartProductType = {
     description: string;
     category: String;
     brabd: string;
-    selectedImg: SelectImgType;
+    selectedImg: SelectedImgType;
     quantity: number;
     price: number;
 };
 
-export type SelectImgType = { color: String; colorCode: string; image: string };
+export type SelectedImgType = { color: String; colorCode: string; image: string };
 
 const Horizontal = () => {
     return <hr className="w-[30% my-2]" />;
@@ -35,8 +38,36 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         quantity: 1,
         price: product.price,
     });
+
     const productRating =
         product.reviews.reduce((acc: number, item: any) => item.rating + acc, 0) / product.reviews.length;
+
+    const handleColorSelect = useCallback((value: SelectedImgType) => {
+        setCartProduct((prev) => {
+            return { ...prev, selectedImg: value };
+        });
+    }, []);
+
+    const handlQtyIncrease = useCallback(() => {
+        if (cartProduct.quantity === 99) {
+            return;
+        }
+
+        setCartProduct((prev) => {
+            return { ...prev, quantity: prev.quantity + 1 };
+        });
+    }, [cartProduct]);
+
+    const handlQtyDecrease = useCallback(() => {
+        if (cartProduct.quantity === 1) {
+            return;
+        }
+
+        setCartProduct((prev) => {
+            return { ...prev, quantity: prev.quantity - 1 };
+        });
+    }, [cartProduct]);
+
     return (
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
             <div>Images</div>
@@ -52,10 +83,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                 <div>
                     <span className="font-semibold">{product.category}</span>
                 </div>
+                <div>
+                    <span className="font-semibold">BRAND:</span>
+                    {product.brand}
+                </div>
+                <div className={product.inStock ? 'text-teal-400' : 'text-rose-400'}>
+                    {product.inStock ? 'In stock' : 'Out of stock'}
+                </div>
                 <Horizontal />
-                <div>color</div> <Horizontal />
-                <div>quality</div> <Horizontal />
-                <div>add to cart</div>
+                <SetColor cartProduct={cartProduct} images={product.images} handleColorSelect={handleColorSelect} />
+                <Horizontal />
+                <SetQuantity
+                    cartProduct={cartProduct}
+                    handlQtyIncrease={handlQtyIncrease}
+                    handlQtyDecrease={handlQtyDecrease}
+                />
+                <Horizontal />
+                <Button label="Add To Cart" onClick={() => {}} />
             </div>
         </div>
     );

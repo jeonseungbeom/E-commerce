@@ -6,7 +6,9 @@ import SetColor from '@/app/components/products/SetColor';
 import SetQuantity from '@/app/components/products/SetQuantity';
 import { useCart } from '@/hooks/useCart';
 import { Rating } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { MdCheckCircle } from 'react-icons/md';
 
 interface ProductDetailsProps {
     product: any;
@@ -30,10 +32,12 @@ const Horizontal = () => {
 };
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
-    const {cartTotalQty}=useCart()
+    // 3번 알러트
+    const { handleAddProductToCart, cartProducts } = useCart();
+    const [isProductInCart, setIsProductInCart] = useState(false);
     const [cartProduct, setCartProduct] = useState<CartProductType>({
         id: product.id,
-        name: product.namem,
+        name: product.name,
         description: product.description,
         category: product.category,
         brabd: product.brand,
@@ -41,6 +45,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         quantity: 1,
         price: product.price,
     });
+    const router = useRouter();
+
+    useEffect(() => {
+        setIsProductInCart(false);
+
+        if (cartProducts) {
+            const existingIndex = cartProducts.findIndex((item) => item.id === product.id);
+            if (existingIndex > -1) {
+                setIsProductInCart(true);
+            }
+        }
+    }, [cartProducts]);
 
     const productRating =
         product.reviews.reduce((acc: number, item: any) => item.rating + acc, 0) / product.reviews.length;
@@ -94,15 +110,46 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                     {product.inStock ? 'In stock' : 'Out of stock'}
                 </div>
                 <Horizontal />
-                <SetColor cartProduct={cartProduct} images={product.images} handleColorSelect={handleColorSelect} />
-                <Horizontal />
-                <SetQuantity
-                    cartProduct={cartProduct}
-                    handlQtyIncrease={handlQtyIncrease}
-                    handlQtyDecrease={handlQtyDecrease}
-                />
-                <Horizontal />
-                <Button label="Add To Cart" onClick={() => {}} />
+                {isProductInCart ? (
+                    <>
+                        <p className="flex items-center gap-1 mb-2 text-slate-500">
+                            <MdCheckCircle className="text-teal-400" size={20} />
+                            <span>Product added to cart</span>
+                        </p>
+                        <div>
+                            <Button
+                                label="View Cart"
+                                outline
+                                onClick={() => {
+                                    router.push('/cart');
+                                }}
+                            ></Button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <SetColor
+                            cartProduct={cartProduct}
+                            images={product.images}
+                            handleColorSelect={handleColorSelect}
+                        />
+                        <Horizontal />
+                        <SetQuantity
+                            cartProduct={cartProduct}
+                            handlQtyIncrease={handlQtyIncrease}
+                            handlQtyDecrease={handlQtyDecrease}
+                        />
+                        <Horizontal />
+                        <div className="max-w-[300px]">
+                            <Button
+                                label="Add To Cart"
+                                onClick={() => {
+                                    handleAddProductToCart(cartProduct);
+                                }}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

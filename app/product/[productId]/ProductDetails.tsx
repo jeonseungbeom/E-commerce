@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/app/components/Button';
+import ProductImage from '@/app/components/products/ProductImages';
 import SetColor from '@/app/components/products/SetColor';
 import SetQuantity from '@/app/components/products/SetQuantity';
 import { Rating } from '@mui/material';
@@ -11,17 +12,17 @@ interface ProductDetailsProps {
 }
 
 export type CartProductType = {
-    id: String;
+    id: string;
     name: string;
     description: string;
-    category: String;
+    category: string;
     brabd: string;
     selectedImg: SelectedImgType;
     quantity: number;
     price: number;
 };
 
-export type SelectedImgType = { color: String; colorCode: string; image: string };
+export type SelectedImgType = { color: string; colorCode: string; image: string };
 
 const Horizontal = () => {
     return <hr className="w-[30% my-2]" />;
@@ -70,7 +71,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
     return (
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-            <div>Images</div>
+            <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect} />
             <div className="flex flex-col gap-1 text-sm text-slate-500">
                 <h2 className="text-3xl font-medium text-slate-700">{product.name}</h2>
                 <div className="flex items-center gap-2">

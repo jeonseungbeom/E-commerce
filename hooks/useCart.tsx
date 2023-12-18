@@ -57,7 +57,6 @@ export const CartContextProvider = (props: Props) => {
         (product: CartProductType) => {
             setCartProducts((prev) => {
                 let updateCart;
-                console.log(prev);
                 if (prev) {
                     updateCart = [...prev, product];
                 } else {

@@ -19,7 +19,7 @@ const NavBar = async () => {
                         <Link href="/" className={`${redressed.className} font-bold text-2xl`}>
                             E-Shop
                         </Link>
-                        <div className="md:block">search</div>
+                        {/* <div className="md:block">search</div> */}
                         <div className="flex items-center gap-8 md:gap-12">
                             <CartCount />
                             <UserMenu currentUser={currentUser} />

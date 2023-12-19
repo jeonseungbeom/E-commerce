@@ -27,17 +27,17 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ currentUser }) => {
 
     const router = useRouter();
 
-    // useEffect(() => {
-    //     if (currentUser) {
-    //         router.push('/cart');
-    //         router.refresh();
-    //     }
-    // }, []);
+    useEffect(() => {
+        if (currentUser) {
+            router.push('/cart');
+            router.refresh();
+        }
+    }, []);
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setIsLoading(true);
 
-        axios.post('/app/api/register', data).then(() => {
+        axios.post('/api/register', data).then(() => {
             toast.success('Account created');
 
             signIn('credentials', { email: data.email, password: data.password, redirect: false })

@@ -1,3 +1,5 @@
+'use client';
+
 import { CartProductType } from '@/app/product/[productId]/ProductDetails';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -26,7 +28,7 @@ export const CartContextProvider = (props: Props) => {
     const [cartTotalAmount, setCartTotalAmount] = useState(0);
     const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(null);
     const [paymentIntent, setPaymentIntent] = useState<string | null>(null);
-
+    
     useEffect(() => {
         const cartItems: any = localStorage.getItem('eShopCartItems');
         const cProducts: CartProductType[] | null = JSON.parse(cartItems);

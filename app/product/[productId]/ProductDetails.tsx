@@ -32,7 +32,6 @@ const Horizontal = () => {
 };
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
-    // 3번 알러트
     const { handleAddProductToCart, cartProducts } = useCart();
     const [isProductInCart, setIsProductInCart] = useState(false);
     const [cartProduct, setCartProduct] = useState<CartProductType>({

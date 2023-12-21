@@ -43,8 +43,6 @@ export async function POST(request: Request) {
         if (current_intent) {
             const updated_intnent = await stripe.paymentIntents.update(payment_intent_id, { amount: total });
 
-            // update the order
-
             const [existing_order, update_order] = await Promise.all([
                 prisma.order.findFirst({ where: { paymentIntentId: payment_intent_id } }),
                 prisma.order.update({
@@ -60,14 +58,12 @@ export async function POST(request: Request) {
             return NextResponse.json({ paymentIntent: updated_intnent });
         }
     } else {
-        // create the intent
         const paymentIntent = await stripe.paymentIntents.create({
             amount: total,
             currency: 'usd',
             automatic_payment_methods: { enabled: true },
         });
 
-        // create the order
         orderData.paymentIntentId = paymentIntent.id;
 
         await prisma.order.create({ data: orderData });
